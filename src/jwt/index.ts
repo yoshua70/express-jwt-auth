@@ -40,13 +40,12 @@ export const decode = async (params: JWTDecodeParams) => {
 export const getToken = async (
   params: GetTokenParams
 ): Promise<string | null> => {
-  const { req, cookieName } = params;
+  const { req } = params;
 
   if (!req) throw new Error("Must pass `req` to JWT getToken()");
 
   const authorization = req.headers.authorization;
-
-  let token = req.cookies[cookieName];
+  let token = null;
 
   if (!token && authorization?.split(" ")[0] === "Bearer") {
     token = authorization.split(" ")[1];
