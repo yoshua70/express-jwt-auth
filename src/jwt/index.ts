@@ -56,8 +56,6 @@ export const getToken = async (params: GetTokenParams): Promise<GetTokenReturn> 
     accessToken = authorization.split(" ")[1];
   }
 
-  console.log(req.cookies);
-
   refreshToken = req.cookies[cookieName];
 
   return { accessToken: accessToken, refreshToken: refreshToken };
