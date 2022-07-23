@@ -1,0 +1,19 @@
+{
+  "name": "express-jwt-auth",
+  "version": "1.0.0",
+  "description": "Authentication service using JWT and Expressjs.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoshua70/express-jwt-auth.git"
+  },
+  "author": "Michée Allidjinou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yoshua70/express-jwt-auth/issues"
+  },
+  "homepage": "https://github.com/yoshua70/express-jwt-auth#readme"
+}
