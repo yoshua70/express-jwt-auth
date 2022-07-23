@@ -2,10 +2,12 @@ import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc/server";
 import { createContext } from "./trpc/context";
+import cookieParser from "cookie-parser";
 
 const main = async () => {
   const app = express();
 
+  app.use(cookieParser());
   app.use(
     "/trpc",
     trpcExpress.createExpressMiddleware({ router: appRouter, createContext })

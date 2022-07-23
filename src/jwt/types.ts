@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 export interface JWTEncodeParams {
   userId: string;
@@ -14,4 +15,9 @@ export interface JWTDecodeParams {
 export interface GetTokenParams {
   req: Request;
   cookieName: string;
+}
+
+export interface GetTokenReturn {
+  accessToken: string | null;
+  refreshToken: string | null;
 }

@@ -1,5 +1,10 @@
 import { sign, verify } from "jsonwebtoken";
-import { JWTDecodeParams, JWTEncodeParams, GetTokenParams } from "./types";
+import {
+  JWTDecodeParams,
+  JWTEncodeParams,
+  GetTokenParams,
+  GetTokenReturn,
+} from "./types";
 
 /**
  * Generate a JWT, either an access token or a refresh token.
@@ -37,21 +42,23 @@ export const decode = async (params: JWTDecodeParams) => {
  * Looks for the token inside of the cookie or in the
  * `Authorization` headers.
  */
-export const getToken = async (
-  params: GetTokenParams
-): Promise<string | null> => {
-  const { req } = params;
+export const getToken = async (params: GetTokenParams): Promise<GetTokenReturn> => {
+  const { req, cookieName } = params;
 
   if (!req) throw new Error("Must pass `req` to JWT getToken()");
 
   const authorization = req.headers.authorization;
-  let token = null;
 
-  if (!token && authorization?.split(" ")[0] === "Bearer") {
-    token = authorization.split(" ")[1];
+  let accessToken = "";
+  let refreshToken = "";
+
+  if (authorization?.split(" ")[0] === "Bearer") {
+    accessToken = authorization.split(" ")[1];
   }
 
-  if (!token) return null;
+  console.log(req.cookies);
 
-  return token;
+  refreshToken = req.cookies[cookieName];
+
+  return { accessToken: accessToken, refreshToken: refreshToken };
 };
