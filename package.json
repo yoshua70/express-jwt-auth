@@ -18,6 +18,7 @@
   "homepage": "https://github.com/yoshua70/express-jwt-auth#readme",
   "dependencies": {
     "@prisma/client": "^4.1.0",
+    "@trpc/server": "^9.26.2",
     "argon2": "^0.28.7",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -25,7 +26,8 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "tslib": "^2.4.0",
-    "twilio": "^3.80.0"
+    "twilio": "^3.80.0",
+    "zod": "^3.17.10"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
@@ -34,6 +36,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^18.0.6",
     "nodemon": "^2.0.19",
+    "prettier-plugin-prisma": "^4.1.0",
     "prisma": "^4.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
