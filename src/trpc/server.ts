@@ -2,16 +2,17 @@ import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../utils/prisma-client";
 import argon2 from "argon2";
+import { Context } from "./context";
 
 export const appRouter = trpc
-  .router()
+  .router<Context>()
   .query("getUser", {
     input: z.string(),
     async resolve(req) {
       const user = await prisma.user
         .findFirst({ where: { id: req.input } })
         .finally(() => prisma.$disconnect);
-
+      console.log(req.ctx.token);
       return user;
     },
   })
