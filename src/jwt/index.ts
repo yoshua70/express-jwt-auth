@@ -1,27 +1,11 @@
-import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
-
-type JWTEncodeParams = {
-  userId: string;
-  expiresIn: string;
-  type: "access" | "refresh";
-};
-
-type JWTDecodeParams = {
-  token: string;
-  secret: string;
-};
-
-type GetTokenParams = {
-  req: Request;
-  cookieName: string;
-};
+import { JWTDecodeParams, JWTEncodeParams, GetTokenParams } from "./types";
 
 /**
  * Generate a JWT, either an access token or a refresh token.
  * The algorithm used by default is "HS256".
  */
-export const encode = (params: JWTEncodeParams) => {
+export const encode = async (params: JWTEncodeParams) => {
   const { userId, expiresIn, type } = params;
 
   const secret =
@@ -40,7 +24,7 @@ export const encode = (params: JWTEncodeParams) => {
  * Decode a JWT. Must provide a secret since the access
  * and refresh tokens may use different encoding secret.
  */
-export const decode = (params: JWTDecodeParams) => {
+export const decode = async (params: JWTDecodeParams) => {
   const { token, secret } = params;
 
   if (!token) return null;
@@ -53,7 +37,9 @@ export const decode = (params: JWTDecodeParams) => {
  * Looks for the token inside of the cookie or in the
  * `Authorization` headers.
  */
-export const getToken = async (params: GetTokenParams) => {
+export const getToken = async (
+  params: GetTokenParams
+): Promise<string | null> => {
   const { req, cookieName } = params;
 
   if (!req) throw new Error("Must pass `req` to JWT getToken()");
