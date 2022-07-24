@@ -2,6 +2,7 @@ import { createRouter } from "../router";
 import { z } from "zod";
 import { prisma } from "../../utils/prisma-client";
 import argon2 from "argon2";
+import { twilio } from "../../utils/twilio-client";
 
 export const userRouter = createRouter()
   .query("getUser", {
@@ -34,5 +35,47 @@ export const userRouter = createRouter()
       return await prisma.user
         .create({ data: { phone, name, password: hashedPassword } })
         .finally(() => prisma.$disconnect);
+    },
+  })
+  .mutation("sendVerification", {
+    input: z.object({
+      phone: z.string().length(10),
+      indicatif: z.string(),
+    }),
+    async resolve(req) {
+      const { phone, indicatif } = req.input;
+
+      return twilio.verifications
+        .create({
+          to: `${indicatif}${phone}`,
+          channel: "sms",
+        })
+        .then((verification) => {
+          return { status: verification.status };
+        })
+        .catch((err) => {
+          console.error(err);
+          return { status: "failed to send request" };
+        });
+    },
+  })
+  .mutation("verify", {
+    input: z.object({
+      phone: z.string().length(10),
+      indicatif: z.string(),
+      code: z.number().int(),
+    }),
+    async resolve(req) {
+      const { phone, indicatif, code } = req.input;
+
+      return twilio.verificationChecks
+        .create({ to: `${indicatif}${phone}`, code: code.toString() })
+        .then((verification_check) => {
+          return { status: verification_check.status };
+        })
+        .catch((err) => {
+          console.error(err);
+          return { status: "failed to send request" };
+        });
     },
   });
