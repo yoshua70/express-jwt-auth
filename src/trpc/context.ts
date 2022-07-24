@@ -9,6 +9,8 @@ export const createContext = async ({
   const token = await getToken({ req, cookieName: "auth_jwt" });
 
   return {
+    req,
+    res,
     token,
   };
 };

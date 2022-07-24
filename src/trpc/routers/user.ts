@@ -81,16 +81,22 @@ export const userRouter = createRouter()
             if (!user)
               return { status: "failed", message: "The user does not exist." };
 
+            
+            req.ctx.res.cookie(
+              "refresh_token",
+              await encode({
+                userId: user.id,
+                expiresIn: "7d",
+                type: "refresh",
+              }),
+              { httpOnly: true }
+            );
+
             return {
               accessToken: await encode({
                 userId: user.id,
                 expiresIn: "15m",
                 type: "access",
-              }),
-              refreshToken: await encode({
-                userId: user.id,
-                expiresIn: "7d",
-                type: "refresh",
               }),
             };
           }
