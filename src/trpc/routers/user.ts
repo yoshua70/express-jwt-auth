@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../utils/prisma-client";
 import argon2 from "argon2";
 import { twilio } from "../../utils/twilio-client";
+import { encode } from "../../jwt";
 
 export const userRouter = createRouter()
   .query("getUser", {
@@ -70,7 +71,29 @@ export const userRouter = createRouter()
 
       return twilio.verificationChecks
         .create({ to: `${indicatif}${phone}`, code: code.toString() })
-        .then((verification_check) => {
+        .then(async (verification_check) => {
+          if (verification_check.status === "approved") {
+            const user = await prisma.user.findFirst({
+              where: { phone },
+              select: { id: true },
+            });
+
+            if (!user)
+              return { status: "failed", message: "The user does not exist." };
+
+            return {
+              accessToken: await encode({
+                userId: user.id,
+                expiresIn: "15m",
+                type: "access",
+              }),
+              refreshToken: await encode({
+                userId: user.id,
+                expiresIn: "7d",
+                type: "refresh",
+              }),
+            };
+          }
           return { status: verification_check.status };
         })
         .catch((err) => {
